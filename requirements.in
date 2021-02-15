@@ -7,3 +7,5 @@ django-cors-headers
 django-otp
 pillow
 psycopg2-binary
+sentry_sdk
+django_redis
