@@ -9,8 +9,28 @@ https://docs.djangoproject.com/en/3.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
-
+import os
 from pathlib import Path
+
+from django.utils.translation import ugettext_lazy as _
+import sentry_sdk
+from sentry_sdk.integrations.celery import CeleryIntegration
+from sentry_sdk.integrations.django import DjangoIntegration
+from sentry_sdk.integrations.redis import RedisIntegration
+
+
+sentry_sdk.init(
+    dsn=os.environ.get('SENTRY_DSN'),
+    integrations=[DjangoIntegration(), CeleryIntegration(), RedisIntegration()],
+
+    # If you wish to associate users to errors (assuming you are using
+    # django.contrib.auth) you may enable sending PII data.
+    send_default_pii=True
+)
+
+APP_VERSION = "0.0.0"
+
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,12 +40,31 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'an+pfo&&@0n5wz8xjoiyx%h2tb*k#v*)_1b62hzv=*2#(wl_58'
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG_VALUE') == 'True'
 
-ALLOWED_HOSTS = ['192.168.0.109', 'localhost', '192.168.1.106', '192.168.88.50']
+# ALLOWED_HOSTS = ['192.168.0.109', 'localhost', '192.168.1.106', '192.168.88.50']
+
+ALLOWED_HOSTS = [host.strip() for host in os.environ.get("ALLOWED_HOSTS", "127.0.0.1,0.0.0.0,localhost").split(',')]
+
+
+CORS_ORIGIN_WHITELIST = [origin.strip() for origin in
+                         os.environ.get("CORS_ORIGINS", "http://localhost:8080").split(',')]
+
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+    'cache-control',
+]
 
 
 # Application definition
@@ -39,7 +78,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'drf_spectacular',
 
-    'metrics.apps.MetricsConfig'
+    'metrics.apps.MetricsConfig',
+    'django_openapi',
+    'sentry_sdk'
 ]
 
 MIDDLEWARE = [
@@ -65,7 +106,7 @@ ROOT_URLCONF = 'monitoring.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates']
+        'DIRS': [os.path.join(BASE_DIR, 'templates')]
         ,
         'APP_DIRS': True,
         'OPTIONS': {
@@ -82,13 +123,28 @@ TEMPLATES = [
 WSGI_APPLICATION = 'monitoring.wsgi.application'
 
 
+if DEBUG is False:
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SCHEMA = 'https'
+else:
+    SCHEMA = 'http'
+
+
+
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': os.environ.get('DB_NAME'),
+        'USER': os.environ.get('DB_USER'),
+        'PASSWORD': os.environ.get('DB_PASSWORD'),
+        'HOST': os.environ.get('DB_IP'),
+        'PORT': os.environ.get('DB_PORT'),
     }
 }
 
@@ -115,9 +171,10 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'fa'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Tehran'
+
 
 USE_I18N = True
 
@@ -126,7 +183,48 @@ USE_L10N = True
 USE_TZ = True
 
 
+LANGUAGES = (
+    # ('en', _('English')),
+    ('fa', _('Persian')),
+)
+
+LOCALE_PATHS = (
+    os.path.join(BASE_DIR, 'locale'),
+)
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join('staticfiles')
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
+
+REDIS_HOST = os.environ.get('REDIS_HOST', 'localhost')
+REDIS_PORT = os.environ.get('REDIS_PORT', '6379')
+REDIS_DATABASE = os.environ.get('REDIS_DATABASE', '5')
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": f'redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_DATABASE}',
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "MAX_ENTRIES": 1000  # Increase max cache entries to 1k (from 300)
+        },
+    }
+}
+
+
+# Celery settings
+BROKER_URL = f'redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_DATABASE}'  # our redis address
+# use json format for everything
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+BROKER_TRANSPORT_OPTIONS = {'visibility_timeout': 3600}
+CELERY_RESULT_BACKEND = 'redis://' + REDIS_HOST + ':' + REDIS_PORT + '/' + REDIS_DATABASE
+CELERY_TIMEZONE = 'Asia/Tehran'
+
+CAPTCHA_SECRET = os.environ.get('CAPTCHA_SECRET')
