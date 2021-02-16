@@ -4,16 +4,34 @@
 #
 #    pip-compile requirements.in
 #
+amqp==5.0.5
+    # via kombu
 asgiref==3.3.1
     # via django
 attrs==20.3.0
     # via jsonschema
+billiard==3.6.3.0
+    # via celery
+celery==5.0.5
+    # via -r requirements.in
 certifi==2020.12.5
     # via
     #   requests
     #   sentry-sdk
 chardet==4.0.0
     # via requests
+click-didyoumean==0.0.3
+    # via celery
+click-plugins==1.1.1
+    # via celery
+click-repl==0.1.6
+    # via celery
+click==7.1.2
+    # via
+    #   celery
+    #   click-didyoumean
+    #   click-plugins
+    #   click-repl
 django-cors-headers==3.7.0
     # via -r requirements.in
 django-filter==2.4.0
@@ -43,14 +61,20 @@ inflection==0.5.1
     # via drf-spectacular
 jsonschema==3.2.0
     # via drf-spectacular
+kombu==5.0.2
+    # via celery
 pillow==8.1.0
     # via -r requirements.in
+prompt-toolkit==3.0.16
+    # via click-repl
 psycopg2-binary==2.8.6
     # via -r requirements.in
 pyrsistent==0.17.3
     # via jsonschema
 pytz==2021.1
-    # via django
+    # via
+    #   celery
+    #   django
 pyyaml==5.4.1
     # via drf-spectacular
 redis==3.5.3
@@ -60,7 +84,9 @@ requests==2.25.1
 sentry-sdk==0.20.2
     # via -r requirements.in
 six==1.15.0
-    # via jsonschema
+    # via
+    #   click-repl
+    #   jsonschema
 sqlparse==0.4.1
     # via django
 uritemplate==3.0.1
@@ -69,6 +95,12 @@ urllib3==1.26.3
     # via
     #   requests
     #   sentry-sdk
+vine==5.0.0
+    # via
+    #   amqp
+    #   celery
+wcwidth==0.2.5
+    # via prompt-toolkit
 
 # The following packages are considered to be unsafe in a requirements file:
 # setuptools
