@@ -12,7 +12,7 @@ class LogViewSet(viewsets.GenericViewSet,
 
     """
         POST:
-            "create" --> http://192.168.88.50:8000/api/metrics/log/
+            "create" --> http://192.168.88.50:8000/api/metrics/logs/
             To create new log
             send me:
                 "logged_at": the time of log in this format(2021-01-04 15:27:57)
@@ -88,8 +88,8 @@ class LogViewSet(viewsets.GenericViewSet,
 
     def get_serializer_class(self):
 
-        # if self.action == 'create':
-        #     return CreateLogSerializer
+        if self.action == 'create':
+            return CreateLogSerializer
 
         if self.action == 'list':
             return ListLogSerializer
