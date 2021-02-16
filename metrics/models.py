@@ -49,12 +49,12 @@ class Unit(models.Model):
         return self.name
 
 
-class   Log(models.Model):
+class Log(models.Model):
     # example --> 1 (ds18b20)
     sensor = models.ForeignKey(to="metrics.Sensor", on_delete=models.CASCADE)
 
-    created_at_by_server = models.DateTimeField(auto_now_add=True)
-    updated_at_by_server = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     logged_at = models.DateTimeField()
 

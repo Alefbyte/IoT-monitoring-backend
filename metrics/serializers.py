@@ -14,13 +14,8 @@ class UnitSerializer(serializers.ModelSerializer):
         fields = ['id', 'name']
 
 
-class SensorListSerializer(serializers.ModelSerializer):
+class ListSensorSerializer(serializers.ModelSerializer):
     """ GET --> just a list of all sensors"""
-
-    sensors_count = serializers.SerializerMethodField()
-
-    def get_sensors_count(self, obj):
-        return Sensor.objects.all().count()
 
     class Meta:
         model = Sensor
@@ -44,7 +39,7 @@ class SensorListSerializer(serializers.ModelSerializer):
                             ]
 
 
-class SensorRetrieveSerializer(serializers.ModelSerializer):
+class DetailSensorSerializer(serializers.ModelSerializer):
 
     """ just GET the whole information of all sensors """
 
@@ -77,14 +72,6 @@ class CreateLogSerializer(serializers.ModelSerializer):
 
     uuid = serializers.CharField(source="sensor.uuid")
 
-    class Meta:
-        model = Log
-        fields = [
-            'logged_at',
-            'temp',
-            'uuid'
-        ]
-
     def validate(self, data):
         validated_data = super(CreateLogSerializer, self).validate(data)
 
@@ -101,11 +88,19 @@ class CreateLogSerializer(serializers.ModelSerializer):
 
         return log_obj
 
+    class Meta:
+        model = Log
+        fields = [
+            'logged_at',
+            'temp',
+            'uuid'
+        ]
+
 
 class ListLogSerializer(serializers.ModelSerializer):
     """ just return a list of logs """
 
-    sensor = SensorRetrieveSerializer()
+    sensor = DetailSensorSerializer()
 
     class Meta:
         model = Log
@@ -126,9 +121,9 @@ class ListLogSerializer(serializers.ModelSerializer):
                             'resistance']
 
 
-class RetrieveLogSerializer(serializers.ModelSerializer):
+class DetailLogSerializer(serializers.ModelSerializer):
 
-    sensor = SensorRetrieveSerializer()
+    sensor = DetailSensorSerializer()
 
     class Meta:
         model = Log
@@ -137,8 +132,8 @@ class RetrieveLogSerializer(serializers.ModelSerializer):
             # read_only_fields
             'id',
             'sensor',
-            'created_at_by_server',
-            'updated_at_by_server',
+            'created_at',
+            'updated_at',
             'logged_at',
             'temp',
             'voltage',
@@ -148,8 +143,8 @@ class RetrieveLogSerializer(serializers.ModelSerializer):
         read_only_fields = [
             'id',
             'sensor',
-            'created_at_by_server',
-            'updated_at_by_server',
+            'created_at',
+            'updated_at',
             'logged_at',
             'temp',
             'voltage',

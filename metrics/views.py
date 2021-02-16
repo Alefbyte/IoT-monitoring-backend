@@ -63,8 +63,8 @@ class LogViewSet(viewsets.GenericViewSet,
                                             "name": "celsius"
                                         }
                                     },
-                                    "created_at_by_server": "2021-01-04T12:35:23.457838Z",
-                                    "updated_at_by_server": "2021-01-04T12:35:23.457859Z",
+                                    "created_at": "2021-01-04T12:35:23.457838Z",
+                                    "updated_at": "2021-01-04T12:35:23.457859Z",
                                     "logged_at": "2021-01-04T15:58:53.645127Z",
                                     "temp": 24.875,
                                     "voltage": null,
@@ -78,8 +78,7 @@ class LogViewSet(viewsets.GenericViewSet,
 
     def get_queryset(self):
 
-        if self.action == 'create':
-            pass
+        # if self.action == 'create':
 
         if self.action == 'list':
             return Log.objects.all().order_by('-logged_at')
@@ -89,14 +88,14 @@ class LogViewSet(viewsets.GenericViewSet,
 
     def get_serializer_class(self):
 
-        if self.action == 'create':
-            return CreateLogSerializer
+        # if self.action == 'create':
+        #     return CreateLogSerializer
 
         if self.action == 'list':
             return ListLogSerializer
 
         if self.action == 'retrieve':
-            return RetrieveLogSerializer
+            return DetailLogSerializer
 
 
 class SensorsViewSet(viewsets.GenericViewSet,
@@ -158,10 +157,10 @@ class SensorsViewSet(viewsets.GenericViewSet,
     def get_serializer_class(self):
 
         if self.action == 'list':
-            return SensorListSerializer
+            return ListSensorSerializer
 
         if self.action == 'retrieve':
-            return SensorRetrieveSerializer
+            return DetailSensorSerializer
 
 
 class SensorTypeViewSet(viewsets.GenericViewSet,

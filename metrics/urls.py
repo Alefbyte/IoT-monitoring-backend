@@ -8,7 +8,7 @@ router = DefaultRouter()
 
 router.register('sensor-types', SensorTypeViewSet)
 router.register('sensors', SensorsViewSet, basename='sensors')
-router.register('log', LogViewSet, basename='log')
+router.register('logs', LogViewSet, basename='logs')
 # path('api/schema/', SpectacularAPIView.as_view(), name='schema')
 
 
