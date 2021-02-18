@@ -14,7 +14,7 @@ class UnitSerializer(serializers.ModelSerializer):
         fields = ['id', 'name']
 
 
-class ListSensorSerializer(serializers.ModelSerializer):
+class SensorListSerializer(serializers.ModelSerializer):
     """ GET --> just a list of all sensors"""
 
     class Meta:
@@ -39,7 +39,7 @@ class ListSensorSerializer(serializers.ModelSerializer):
                             ]
 
 
-class DetailSensorSerializer(serializers.ModelSerializer):
+class SensorDetailSerializer(serializers.ModelSerializer):
 
     """ just GET the whole information of all sensors """
 
@@ -67,13 +67,13 @@ class DetailSensorSerializer(serializers.ModelSerializer):
                             ]
 
 
-class CreateLogSerializer(serializers.ModelSerializer):
+class LogCreateSerializer(serializers.ModelSerializer):
     """ POST --> just create logs """
 
     uuid = serializers.CharField(source="sensor.uuid")
 
     def validate(self, data):
-        validated_data = super(CreateLogSerializer, self).validate(data)
+        validated_data = super(LogCreateSerializer, self).validate(data)
 
         # sensor's uuid must registered with in system
         if not Sensor.objects.filter(uuid=validated_data['sensor']['uuid']).exists():
@@ -97,10 +97,10 @@ class CreateLogSerializer(serializers.ModelSerializer):
         ]
 
 
-class ListLogSerializer(serializers.ModelSerializer):
+class LogListSerializer(serializers.ModelSerializer):
     """ just return a list of logs """
 
-    sensor = DetailSensorSerializer()
+    sensor = SensorDetailSerializer()
 
     class Meta:
         model = Log
@@ -121,9 +121,9 @@ class ListLogSerializer(serializers.ModelSerializer):
                             'resistance']
 
 
-class DetailLogSerializer(serializers.ModelSerializer):
+class LogDetailSerializer(serializers.ModelSerializer):
 
-    sensor = DetailSensorSerializer()
+    sensor = SensorDetailSerializer()
 
     class Meta:
         model = Log

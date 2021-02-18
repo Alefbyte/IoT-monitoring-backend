@@ -89,13 +89,13 @@ class LogViewSet(viewsets.GenericViewSet,
     def get_serializer_class(self):
 
         if self.action == 'create':
-            return CreateLogSerializer
+            return LogCreateSerializer
 
         if self.action == 'list':
-            return ListLogSerializer
+            return LogListSerializer
 
         if self.action == 'retrieve':
-            return DetailLogSerializer
+            return LogDetailSerializer
 
 
 class SensorsViewSet(viewsets.GenericViewSet,
@@ -157,10 +157,10 @@ class SensorsViewSet(viewsets.GenericViewSet,
     def get_serializer_class(self):
 
         if self.action == 'list':
-            return ListSensorSerializer
+            return SensorListSerializer
 
         if self.action == 'retrieve':
-            return DetailSensorSerializer
+            return SensorDetailSerializer
 
 
 class SensorTypeViewSet(viewsets.GenericViewSet,
