@@ -11,3 +11,4 @@ sentry_sdk
 django_redis
 celery
 openapi
+django_openapi
