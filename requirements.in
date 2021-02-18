@@ -10,3 +10,5 @@ psycopg2-binary
 sentry_sdk
 django_redis
 celery
+openapi
+django_openapi

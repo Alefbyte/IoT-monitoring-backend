@@ -36,6 +36,8 @@ django-cors-headers==3.7.0
     # via -r requirements.in
 django-filter==2.4.0
     # via -r requirements.in
+django-openapi==0.1.1.11
+    # via -r requirements.in
 django-otp==1.0.2
     # via -r requirements.in
 django-redis==4.12.1
@@ -45,6 +47,7 @@ django==3.1.6
     #   -r requirements.in
     #   django-cors-headers
     #   django-filter
+    #   django-openapi
     #   django-otp
     #   django-redis
     #   djangorestframework
@@ -58,11 +61,17 @@ drf-spectacular==0.13.2
 idna==2.10
     # via requests
 inflection==0.5.1
-    # via drf-spectacular
+    # via
+    #   drf-spectacular
+    #   openapi
 jsonschema==3.2.0
-    # via drf-spectacular
+    # via
+    #   drf-spectacular
+    #   openapi
 kombu==5.0.2
     # via celery
+openapi==1.1.0
+    # via -r requirements.in
 pillow==8.1.0
     # via -r requirements.in
 prompt-toolkit==3.0.16
@@ -86,6 +95,7 @@ sentry-sdk==0.20.2
 six==1.15.0
     # via
     #   click-repl
+    #   django-openapi
     #   jsonschema
 sqlparse==0.4.1
     # via django
