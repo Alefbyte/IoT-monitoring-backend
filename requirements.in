@@ -1,0 +1,12 @@
+django
+djangorestframework
+django-filter
+drf-spectacular
+requests
+django-cors-headers
+django-otp
+pillow
+psycopg2-binary
+sentry_sdk
+django_redis
+celery
