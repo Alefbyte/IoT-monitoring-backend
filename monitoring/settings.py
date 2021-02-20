@@ -12,12 +12,11 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 import os
 from pathlib import Path
 
-from django.utils.translation import ugettext_lazy as _
 import sentry_sdk
+from django.utils.translation import ugettext_lazy as _
 from sentry_sdk.integrations.celery import CeleryIntegration
 from sentry_sdk.integrations.django import DjangoIntegration
 from sentry_sdk.integrations.redis import RedisIntegration
-
 
 sentry_sdk.init(
     dsn=os.environ.get('SENTRY_DSN'),
@@ -78,12 +77,14 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'drf_spectacular',
 
+    'corsheaders',
     'metrics.apps.MetricsConfig',
     'django_openapi',
     'sentry_sdk'
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',

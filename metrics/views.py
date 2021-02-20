@@ -114,7 +114,6 @@ class SensorsViewSet(viewsets.GenericViewSet,
                                         "previous": null,
                                         "results": [
                                             {
-                                                "sensors_count": 2,
                                                 "sensor_model": "ds18b20",
                                                 "id": 1,
                                                 "title": "sensor_1",
@@ -123,7 +122,6 @@ class SensorsViewSet(viewsets.GenericViewSet,
                                                 "unit": 2
                                             },
                                             {
-                                                "sensors_count": 2,
                                                 "sensor_model": "ds18b20",
                                                 "id": 2,
                                                 "title": "sensor_2",

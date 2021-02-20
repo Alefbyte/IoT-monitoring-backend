@@ -21,7 +21,6 @@ class SensorListSerializer(serializers.ModelSerializer):
         model = Sensor
         fields = [
             # read_only_fields
-            'sensors_count',
             'sensor_model',
             'id',
             'title',
@@ -29,8 +28,7 @@ class SensorListSerializer(serializers.ModelSerializer):
             'type',
             'unit',
         ]
-        read_only_fields = ['sensors_count',
-                            'sensor_model',
+        read_only_fields = ['sensor_model',
                             'id',
                             'title',
                             'description',
